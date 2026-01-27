@@ -11,7 +11,6 @@ function App() {
   const chatWindowRef = useRef(null);
 
   useEffect(() => {
-    // Scroll to bottom whenever messages change
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
@@ -41,11 +40,23 @@ function App() {
       console.error('Error calling API:', error);
       const errorMessage = {
         role: 'ai',
-        content: 'Sorry, I encountered an error. Please make sure the backend is running.',
+        content: 'I encountered an error. Please ensure the backend and Ollama are running.',
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleClearChat = async () => {
+    if (window.confirm("Are you sure you want to clear the conversation history?")) {
+      try {
+        await axios.post(`${API_BASE_URL}/reset`);
+        setMessages([]);
+      } catch (error) {
+        console.error('Error resetting chat:', error);
+        alert("Failed to clear history on the server.");
+      }
     }
   };
 
@@ -54,24 +65,26 @@ function App() {
       <header className="header">
         <div className="logo">🧠</div>
         <h1>AI Document Agent</h1>
-        <div className="status-badge">Active</div>
-        <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-          Free & Local
-        </div>
+        <div className="status-badge">Memory Active</div>
+        <button
+          onClick={handleClearChat}
+          className="clear-btn"
+          title="Reset Conversation"
+        >
+          🗑️ Clear Chat
+        </button>
       </header>
 
       <div className="chat-window" ref={chatWindowRef}>
         {messages.length === 0 ? (
           <div className="welcome-screen">
-            <h2>Hello! 👋</h2>
+            <h2>Context-Aware AI 👋</h2>
             <p>
-              I'm your private AI assistant. Ask me anything about your business
-              documents and I'll find the answer for you.
+              I now remember our conversation! You can ask follow-up questions
+              without repeating the subject.
             </p>
-            <div style={{ marginTop: '2rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-               <span className="source-tag">Company Policy</span>
-               <span className="source-tag">Project Updates</span>
-               <span className="source-tag">Service List</span>
+            <div style={{ marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              Try asking: "Who is the CEO?" then "How long have they been there?"
             </div>
           </div>
         ) : (
@@ -80,7 +93,7 @@ function App() {
               <div className="content">{msg.content}</div>
               {msg.sources && msg.sources.length > 0 && (
                 <div className="sources">
-                  <strong>Sources:</strong>
+                  <strong>References:</strong>
                   <div>
                     {msg.sources.map((src, idx) => (
                       <span key={idx} className="source-tag">
@@ -110,7 +123,7 @@ function App() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question..."
+            placeholder="Type your message..."
             disabled={isLoading}
           />
           <button type="submit" disabled={isLoading || !input.trim()}>

@@ -1,6 +1,6 @@
 """
 FastAPI Application
-REST API for AI Document Q&A
+REST API for Conversational AI Document Q&A
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,8 +17,8 @@ from services.qa_service import QAService
 
 app = FastAPI(
     title="AI Document Q&A API",
-    description="Free local AI agent for answering questions about business documents",
-    version="1.0.0"
+    description="Free local AI agent with Conversational Memory",
+    version="1.1.0"
 )
 
 # CORS configuration
@@ -50,7 +50,7 @@ async def startup_event():
     """Initialize QA system on startup"""
     global qa_service
     
-    print("Initializing AI Document Q&A system...")
+    print("Initializing Stateful AI Document Q&A system...")
     
     try:
         # Load vector store
@@ -60,19 +60,16 @@ async def startup_event():
         )
         vector_store = vector_store_manager.get_vector_store()
         
-        # Initialize QA service
+        # Initialize QA service (Now with Memory!)
         qa_service = QAService(
             vector_store=vector_store,
             model_name="llama3.2"
         )
         
-        print("✓ QA system initialized successfully!")
+        print("✓ Conversational QA system initialized successfully!")
         
     except Exception as e:
         print(f"✗ Error initializing QA system: {str(e)}")
-        print("Make sure you have:")
-        print("  1. Indexed documents: 'python index_documents.py'")
-        print("  2. Ollama installed and running")
 
 
 @app.get("/")
@@ -80,11 +77,12 @@ async def root():
     """Root endpoint"""
     return {
         "message": "AI Document Q&A API",
-        "status": "running",
-        "cost": "$0.00/month",
+        "status": "online",
+        "memory_enabled": True,
         "endpoints": {
             "health": "/health",
-            "ask": "/ask (POST)"
+            "ask": "/ask (POST)",
+            "reset": "/reset (POST)"
         }
     }
 
@@ -94,26 +92,29 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "qa_service_ready": qa_service is not None,
-        "cost": "$0.00"
+        "qa_service_ready": qa_service is not None
     }
+
+
+@app.post("/reset")
+async def reset_chat():
+    """Reset the conversation memory"""
+    if not qa_service:
+        raise HTTPException(status_code=503, detail="Service not initialized")
+    
+    qa_service.reset_memory()
+    return {"message": "Chat memory cleared successfully"}
 
 
 @app.post("/ask", response_model=AnswerResponse)
 async def ask_question(request: QuestionRequest):
     """
-    Answer a question based on indexed documents
-    
-    Args:
-        request: Question request with 'question' field
-        
-    Returns:
-        Answer and source documents
+    Answer a question with conversational history
     """
     if not qa_service:
         raise HTTPException(
             status_code=503,
-            detail="QA service not initialized. Please check server logs."
+            detail="QA service not initialized."
         )
     
     if not request.question or not request.question.strip():
@@ -123,14 +124,14 @@ async def ask_question(request: QuestionRequest):
         )
     
     try:
+        # The service now uses memory automatically
         result = qa_service.answer_question(request.question)
         
         # Format sources
         sources = [
             {
                 "source": os.path.basename(doc.metadata.get('source', 'Unknown')),
-                "page": doc.metadata.get('page', 'N/A'),
-                "content_preview": doc.page_content[:200] + "..."
+                "page": doc.metadata.get('page', 'N/A')
             }
             for doc in result["sources"]
         ]
