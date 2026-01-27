@@ -10,3 +10,7 @@ ollama==0.1.6
 PyPDF2==3.0.1
 python-docx==1.1.0
 unstructured
+duckduckgo-search
+ddgs
+langchain-ollama
+langchain-chroma

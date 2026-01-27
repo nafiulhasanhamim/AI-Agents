@@ -63,9 +63,11 @@ function App() {
   return (
     <div className="app-container">
       <header className="header">
-        <div className="logo">🧠</div>
-        <h1>AI Document Agent</h1>
-        <div className="status-badge">Memory Active</div>
+        <div className="logo">🌐</div>
+        <h1>AI Digital Assistant</h1>
+        <div className="status-badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', borderColor: 'rgba(99, 102, 241, 0.3)' }}>
+          Digital Skills Active
+        </div>
         <button
           onClick={handleClearChat}
           className="clear-btn"
@@ -78,13 +80,14 @@ function App() {
       <div className="chat-window" ref={chatWindowRef}>
         {messages.length === 0 ? (
           <div className="welcome-screen">
-            <h2>Context-Aware AI 👋</h2>
+            <h2>I have Digital Skills! 🌐</h2>
             <p>
-              I now remember our conversation! You can ask follow-up questions
-              without repeating the subject.
+              I can now search your <strong>Local Documents</strong> or the <strong>Live Internet</strong> to find the answers you need.
             </p>
-            <div style={{ marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              Try asking: "Who is the CEO?" then "How long have they been there?"
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <span className="source-tag">🔍 Local Docs</span>
+              <span className="source-tag">🌍 Web Search</span>
+              <span className="source-tag">🧠 Session Memory</span>
             </div>
           </div>
         ) : (

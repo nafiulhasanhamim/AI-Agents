@@ -1,102 +1,122 @@
 """
-QA Service with Conversational Memory
-Allows multi-turn dialogue using free local Ollama LLM
+QA Service with Digital Skills (Agents) - Modernized & Stabilized
+Uses LangChain Agents to decide between Local Docs and Web Search.
+Optimized for local LLMs like Llama 3.2.
 """
-from langchain_classic.chains import ConversationalRetrievalChain
-from langchain_community.llms import Ollama
+import os
+from langchain_classic.agents import initialize_agent, AgentType
+from langchain_ollama import OllamaLLM
 from langchain_core.prompts import PromptTemplate
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_classic.memory import ConversationBufferMemory
+from langchain_classic.tools import Tool
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_classic.chains import RetrievalQA
 
 
 class QAService:
-    """Service for conversational question answering using local LLM"""
+    """Agentic Service for multi-source question answering"""
     
     def __init__(self, vector_store: Chroma, model_name: str = "llama3.2"):
         """
-        Initialize QA service with conversational memory
-        
-        Args:
-            vector_store: ChromaDB vector store instance
-            model_name: Ollama model name
+        Initialize Agent with Local and Web tools
         """
-        print(f"Initializing Conversational QA with model: {model_name}")
+        print(f"Initializing Intelligent Agent with model: {model_name}")
         
-        # Local LLM
-        self.llm = Ollama(
+        # 1. Initialize Local LLM using the modern OllamaLLM class
+        self.llm = OllamaLLM(
             model=model_name,
-            temperature=0
+            temperature=0,
+            base_url="http://localhost:11434"
         )
         
         self.vector_store = vector_store
         
-        # 1. Memory Configuration
-        # We use memory_key="chat_history" to match the chain's expectations
+        # 2. Create the Local Knowledge Retrieval Chain
+        self.local_qa_chain = RetrievalQA.from_chain_type(
+            llm=self.llm,
+            chain_type="stuff",
+            retriever=self.vector_store.as_retriever(search_kwargs={"k": 4}),
+            return_source_documents=True
+        )
+
+        # 3. Define the Tools
+        # We give the LocalDocs tool a very strong priority description
+        self.tools = [
+            Tool(
+                name="LocalDocs",
+                func=self._local_search,
+                description="ALWAYS USE THIS FIRST. Use this for ANY info about the company, policies, projects, or business documents."
+            ),
+            Tool(
+                name="InternetSearch",
+                func=DuckDuckGoSearchRun().run,
+                description="Use this ONLY as a second choice if you cannot find the answer in LocalDocs."
+            )
+        ]
+
+        # 4. Initialize Memory
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True,
-            output_key="answer"
+            output_key="output"
         )
-        
-        # 2. Rephrase Prompt (Condense Question)
-        # This prompt takes the chat history and the new user question and
-        # creates a single, standalone question that is searchable in the vector DB.
-        condense_template = """Given the following conversation and a follow up question, 
-rephrase the follow up question to be a standalone question, in its original language.
 
-Chat History:
-{chat_history}
-Follow Up Input: {question}
-Standalone question:"""
-        
-        CONDENSE_PROMPT = PromptTemplate.from_template(condense_template)
-        
-        # 3. QA Prompt (Answer Generation)
-        # This prompt takes the retrieved context and answers the standalone question.
-        qa_template = """You are a helpful AI assistant answering questions about business documents.
-
-Use ONLY the following context to answer the question. If the answer is not in the context, say "I don't have enough information in the provided documents to answer that question."
-
-Context:
-{context}
-
-Question: {question}
-
-Answer (be concise and accurate):"""
-        
-        QA_PROMPT = PromptTemplate.from_template(qa_template)
-        
-        # 4. Construct the Conversational Retrieval Chain
-        self.qa_chain = ConversationalRetrievalChain.from_llm(
+        # 5. Initialize the Agent
+        # ZERO_SHOT_REACT_DESCRIPTION is much more stable for small local models 
+        # than the conversational JSON-based agents.
+        self.agent_executor = initialize_agent(
+            tools=self.tools,
             llm=self.llm,
-            retriever=self.vector_store.as_retriever(search_kwargs={"k": 4}),
+            agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
+            verbose=True,
             memory=self.memory,
-            condense_question_prompt=CONDENSE_PROMPT,
-            combine_docs_chain_kwargs={"prompt": QA_PROMPT},
-            return_source_documents=True,
-            verbose=True # Helpful for debugging rephrased queries
+            handle_parsing_errors=True,
+            return_intermediate_steps=False # Faster processing
         )
+        
+        # Internal state for sources
+        self.last_sources = []
+
+    def _local_search(self, query: str) -> str:
+        """Explicitly handles local document retrieval"""
+        if not query or query.strip() == "":
+            return "Please provide a specific search term for the local documents."
+            
+        print(f"  [Tool: LocalDocs] Searching for: {query}")
+        result = self.local_qa_chain.invoke({"query": query})
+        self.last_sources = result["source_documents"]
+        return result["result"]
 
     def answer_question(self, question: str) -> dict:
         """
-        Handle conversational question answering
-        
-        Args:
-            question: User's question
-            
-        Returns:
-            Dictionary with 'answer', 'sources', and 'chat_history'
+        Execute the agent loop with stability fixes
         """
-        # The chain handles memory updates automatically
-        result = self.qa_chain({"question": question})
+        self.last_sources = []
         
-        return {
-            "answer": result["answer"],
-            "sources": result["source_documents"],
-            "chat_history": result["chat_history"]
-        }
+        try:
+            # We add a strong hint to the question to help the local model prioritize correctly
+            enriched_input = f"{question} (IMPORTANT: Check LocalDocs first if relevant)"
+            
+            result = self.agent_executor.invoke({"input": enriched_input})
+            
+            return {
+                "answer": result["output"],
+                "sources": self.last_sources,
+                "chat_history": result["chat_history"]
+            }
+        except Exception as e:
+            print(f"Agent Error: {str(e)}")
+            # Fallback to local search if agent fails
+            fallback = self._local_search(question)
+            return {
+                "answer": fallback,
+                "sources": self.last_sources,
+                "chat_history": []
+            }
     
     def reset_memory(self):
-        """Clear the conversation history"""
+        """Clear history"""
         self.memory.clear()
-        print("✓ Conversation history cleared.")
+        self.last_sources = []
+        print("✓ Agent memory reset.")

@@ -4,7 +4,7 @@ Manages ChromaDB vector database with free local embeddings
 """
 import os
 from typing import List
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 
@@ -57,9 +57,8 @@ class VectorStoreManager:
             collection_name="business_docs"
         )
         
-        # Persist to disk (free storage!)
-        vector_store.persist()
-        print("✓ Documents added and persisted successfully!")
+        # Persistence is handled automatically in modern langchain-chroma
+        print("✓ Documents added automatically to vector store!")
         return vector_store
     
     def get_vector_store(self) -> Chroma:

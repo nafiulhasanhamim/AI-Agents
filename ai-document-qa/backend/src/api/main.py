@@ -17,8 +17,8 @@ from services.qa_service import QAService
 
 app = FastAPI(
     title="AI Document Q&A API",
-    description="Free local AI agent with Conversational Memory",
-    version="1.1.0"
+    description="Free local AI agent with Digital Skills (Web Search)",
+    version="1.2.0"
 )
 
 # CORS configuration
@@ -78,7 +78,8 @@ async def root():
     return {
         "message": "AI Document Q&A API",
         "status": "online",
-        "memory_enabled": True,
+        "version": "1.2.0",
+        "skills": ["Local Retrieval", "Internet Search", "Conversational Memory"],
         "endpoints": {
             "health": "/health",
             "ask": "/ask (POST)",
