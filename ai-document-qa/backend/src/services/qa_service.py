@@ -1,29 +1,27 @@
 """
-QA Service with Digital Skills (Agents) - Modernized & Stabilized
-Uses LangChain Agents to decide between Local Docs and Web Search.
-Optimized for local LLMs like Llama 3.2.
+QA Service with Router Pattern (Optimized)
+Uses a single classification step to route questions to Local Docs or Web Search.
+Eliminates agent loops for maximum speed and reliability.
 """
 import os
-from langchain_classic.agents import initialize_agent, AgentType
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import PromptTemplate
 from langchain_chroma import Chroma
 from langchain_classic.memory import ConversationBufferMemory
-from langchain_classic.tools import Tool
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_classic.chains import RetrievalQA
 
 
 class QAService:
-    """Agentic Service for multi-source question answering"""
+    """Optimized Router Service for multi-source question answering"""
     
     def __init__(self, vector_store: Chroma, model_name: str = "llama3.2"):
         """
-        Initialize Agent with Local and Web tools
+        Initialize Router with Local and Web capabilities
         """
-        print(f"Initializing Intelligent Agent with model: {model_name}")
+        print(f"Initializing Optimized Router Agent with model: {model_name}")
         
-        # 1. Initialize Local LLM using the modern OllamaLLM class
+        # 1. Initialize Local LLM
         self.llm = OllamaLLM(
             model=model_name,
             temperature=0,
@@ -31,8 +29,9 @@ class QAService:
         )
         
         self.vector_store = vector_store
+        self.web_search_tool = DuckDuckGoSearchRun()
         
-        # 2. Create the Local Knowledge Retrieval Chain
+        # 2. Local Knowledge Chain
         self.local_qa_chain = RetrievalQA.from_chain_type(
             llm=self.llm,
             chain_type="stuff",
@@ -40,83 +39,104 @@ class QAService:
             return_source_documents=True
         )
 
-        # 3. Define the Tools
-        # We give the LocalDocs tool a very strong priority description
-        self.tools = [
-            Tool(
-                name="LocalDocs",
-                func=self._local_search,
-                description="ALWAYS USE THIS FIRST. Use this for ANY info about the company, policies, projects, or business documents."
-            ),
-            Tool(
-                name="InternetSearch",
-                func=DuckDuckGoSearchRun().run,
-                description="Use this ONLY as a second choice if you cannot find the answer in LocalDocs."
-            )
-        ]
+        # 3. Router Prompt
+        # A focused prompt that forces the LLM to output a single word classification
+        router_template = """Given the user's question and conversation history, classify the intent into exactly one of these categories:
+- LOCAL: For questions about company policies, internal projects, business documents, employee handbooks, or specific internal data.
+- WEB: For questions about current events, world news, stock prices, public companies, weather, or general knowledge external to this organization.
+- GENERAL: For simple greetings (hi, hello) or questions that don't need data (jokes, philosophical questions).
 
-        # 4. Initialize Memory
+Chat History:
+{chat_history}
+
+Question: {question}
+
+Classification (LOCAL, WEB, or GENERAL):"""
+        
+        self.ROUTER_PROMPT = PromptTemplate.from_template(router_template)
+
+        # 4. Memory
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
-            return_messages=True,
-            output_key="output"
+            return_messages=True
         )
 
-        # 5. Initialize the Agent
-        # ZERO_SHOT_REACT_DESCRIPTION is much more stable for small local models 
-        # than the conversational JSON-based agents.
-        self.agent_executor = initialize_agent(
-            tools=self.tools,
-            llm=self.llm,
-            agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
-            verbose=True,
-            memory=self.memory,
-            handle_parsing_errors=True,
-            return_intermediate_steps=False # Faster processing
-        )
+    def _route_question(self, question: str) -> str:
+        """Decide which tool to use"""
+        # Get history string
+        history = self.memory.load_memory_variables({})['chat_history']
         
-        # Internal state for sources
-        self.last_sources = []
-
-    def _local_search(self, query: str) -> str:
-        """Explicitly handles local document retrieval"""
-        if not query or query.strip() == "":
-            return "Please provide a specific search term for the local documents."
-            
-        print(f"  [Tool: LocalDocs] Searching for: {query}")
-        result = self.local_qa_chain.invoke({"query": query})
-        self.last_sources = result["source_documents"]
-        return result["result"]
+        # format prompt
+        prompt = self.ROUTER_PROMPT.format(chat_history=history, question=question)
+        
+        # Generate classification
+        # We use a lower temperature for routing to be deterministic
+        response = self.llm.invoke(prompt).strip().upper()
+        
+        # Simple heuristic cleanup
+        if "LOCAL" in response: return "LOCAL"
+        if "WEB" in response: return "WEB"
+        return "GENERAL"
 
     def answer_question(self, question: str) -> dict:
         """
-        Execute the agent loop with stability fixes
+        Main execution flow with Router optimization
         """
-        self.last_sources = []
+        route = self._route_question(question)
+        print(f"⚡ Router Decision: [{route}]")
+        
+        sources = []
+        final_answer = ""
         
         try:
-            # We add a strong hint to the question to help the local model prioritize correctly
-            enriched_input = f"{question} (IMPORTANT: Check LocalDocs first if relevant)"
-            
-            result = self.agent_executor.invoke({"input": enriched_input})
+            if route == "LOCAL":
+                # Execute Local Search
+                print("  -> Searching Local Documents...")
+                result = self.local_qa_chain.invoke({"query": question})
+                final_answer = result["result"]
+                sources = result["source_documents"]
+                
+            elif route == "WEB":
+                # Execute Web Search
+                print("  -> Searching the Internet...")
+                # We do a direct search + synthesis
+                search_results = self.web_search_tool.run(question)
+                
+                # Synthesize answer
+                synthesis_prompt = f"""Based on the following web search results, answer the user's question.
+                
+Question: {question}
+
+Web Results:
+{search_results}
+
+Answer (concise and helpful):"""
+                final_answer = self.llm.invoke(synthesis_prompt)
+                
+            else:
+                # General Chat
+                print("  -> General Conversation...")
+                final_answer = self.llm.invoke(question)
+
+            # Update Memory manually since we aren't using a Chain anymore
+            self.memory.chat_memory.add_user_message(question)
+            self.memory.chat_memory.add_ai_message(final_answer)
             
             return {
-                "answer": result["output"],
-                "sources": self.last_sources,
-                "chat_history": result["chat_history"]
+                "answer": final_answer,
+                "sources": sources,
+                "chat_history": self.memory.load_memory_variables({})['chat_history']
             }
+            
         except Exception as e:
-            print(f"Agent Error: {str(e)}")
-            # Fallback to local search if agent fails
-            fallback = self._local_search(question)
+            print(f"✗ Error in QA execution: {str(e)}")
             return {
-                "answer": fallback,
-                "sources": self.last_sources,
+                "answer": f"I encountered an error while processing your request: {str(e)}",
+                "sources": [],
                 "chat_history": []
-            }
+            } # Fallback
     
     def reset_memory(self):
         """Clear history"""
         self.memory.clear()
-        self.last_sources = []
         print("✓ Agent memory reset.")
