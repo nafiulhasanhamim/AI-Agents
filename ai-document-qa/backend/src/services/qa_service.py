@@ -42,7 +42,11 @@ class QAService:
         self.vector_store = vector_store
         self.web_search_tool = DuckDuckGoSearchRun()
         
-        # Local Knowledge Chain
+        # 3. Feature Toggles
+        self.enable_web_search = os.getenv("ENABLE_WEB_SEARCH", "true").lower() == "true"
+        print(f"   └─ Web Search Enabled: {self.enable_web_search}")
+
+        # 4. Local Knowledge Chain
         self.local_qa_chain = RetrievalQA.from_chain_type(
             llm=self.llm,
             chain_type="stuff",
@@ -50,22 +54,28 @@ class QAService:
             return_source_documents=True
         )
 
-        # Router Prompt
-        router_template = """Given the user's question and conversation history, classify the intent into exactly one of these categories:
-- LOCAL: For questions about company policies, internal projects, business documents, employee handbooks, or specific internal data.
-- WEB: For questions about current events, world news, stock prices, public companies, weather, or general knowledge external to this organization.
-- GENERAL: For simple greetings (hi, hello) or questions that don't need data (jokes, philosophical questions).
+        # 5. Router Prompt
+        # We adjust the prompt based on whether web search is enabled
+        router_options = "- LOCAL: For questions about company policies, internal projects, business documents, employee handbooks, or specific internal data.\n"
+        if self.enable_web_search:
+            router_options += "- WEB: For questions about current events, world news, stock prices, public companies, weather, or general knowledge external to this organization.\n"
+        router_options += "- GENERAL: For simple greetings (hi, hello) or questions that don't need data (jokes, philosophical questions)."
+
+        classification_hint = "(LOCAL, WEB, or GENERAL)" if self.enable_web_search else "(LOCAL or GENERAL)"
+
+        router_template = f"""Given the user's question and conversation history, classify the intent into exactly one of these categories:
+{router_options}
 
 Chat History:
-{chat_history}
+{{chat_history}}
 
-Question: {question}
+Question: {{question}}
 
-Classification (LOCAL, WEB, or GENERAL):"""
+Classification {classification_hint}:"""
         
         self.ROUTER_PROMPT = PromptTemplate.from_template(router_template)
 
-        # Memory
+        # 6. Memory
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True
@@ -130,7 +140,7 @@ Classification (LOCAL, WEB, or GENERAL):"""
         
         # Simple heuristic cleanup
         if "LOCAL" in response: return "LOCAL"
-        if "WEB" in response: return "WEB"
+        if "WEB" in response and self.enable_web_search: return "WEB"
         return "GENERAL"
 
     def answer_question(self, question: str) -> dict:
@@ -148,7 +158,7 @@ Classification (LOCAL, WEB, or GENERAL):"""
                 final_answer = result["result"]
                 sources = result["source_documents"]
                 
-            elif route == "WEB":
+            elif route == "WEB" and self.enable_web_search:
                 print("  → Searching the Internet...")
                 search_results = self.web_search_tool.run(question)
                 
