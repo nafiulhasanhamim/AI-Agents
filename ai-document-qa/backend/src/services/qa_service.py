@@ -1,37 +1,48 @@
 """
-QA Service with Router Pattern (Optimized)
-Uses a single classification step to route questions to Local Docs or Web Search.
-Eliminates agent loops for maximum speed and reliability.
+QA Service with Router Pattern - Multi-Model Support
+Supports Ollama (local), Google Gemini, and OpenAI via environment config.
 """
 import os
-from langchain_ollama import OllamaLLM
+from pathlib import Path
+from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
+from langchain_core.language_models.llms import BaseLLM
 from langchain_chroma import Chroma
 from langchain_classic.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_classic.chains import RetrievalQA
 
+# Load environment variables from project root
+# Navigate up from backend/src/services/ to project root
+# We need to resolve() the path first to normalize any .. in __file__
+current_file = Path(__file__).resolve()
+project_root = current_file.parent.parent.parent.parent
+env_path = project_root / '.env'
+load_dotenv(dotenv_path=env_path)
 
 class QAService:
-    """Optimized Router Service for multi-source question answering"""
+    """Optimized Router Service with multi-model support"""
     
-    def __init__(self, vector_store: Chroma, model_name: str = "llama3.2"):
+    def __init__(self, vector_store: Chroma, model_name: str = None):
         """
-        Initialize Router with Local and Web capabilities
-        """
-        print(f"Initializing Optimized Router Agent with model: {model_name}")
+        Initialize Router with configurable LLM provider
         
-        # 1. Initialize Local LLM
-        self.llm = OllamaLLM(
-            model=model_name,
-            temperature=0,
-            base_url="http://localhost:11434"
-        )
+        Args:
+            vector_store: ChromaDB instance
+            model_name: Optional override for model (uses .env if not provided)
+        """
+        # Determine which model provider to use
+        provider = os.getenv("MODEL_PROVIDER", "ollama").lower()
+        
+        print(f"🤖 Initializing AI Agent with provider: {provider.upper()}")
+        
+        # Initialize the appropriate LLM based on provider
+        self.llm = self._initialize_llm(provider, model_name)
         
         self.vector_store = vector_store
         self.web_search_tool = DuckDuckGoSearchRun()
         
-        # 2. Local Knowledge Chain
+        # Local Knowledge Chain
         self.local_qa_chain = RetrievalQA.from_chain_type(
             llm=self.llm,
             chain_type="stuff",
@@ -39,8 +50,7 @@ class QAService:
             return_source_documents=True
         )
 
-        # 3. Router Prompt
-        # A focused prompt that forces the LLM to output a single word classification
+        # Router Prompt
         router_template = """Given the user's question and conversation history, classify the intent into exactly one of these categories:
 - LOCAL: For questions about company policies, internal projects, business documents, employee handbooks, or specific internal data.
 - WEB: For questions about current events, world news, stock prices, public companies, weather, or general knowledge external to this organization.
@@ -55,23 +65,68 @@ Classification (LOCAL, WEB, or GENERAL):"""
         
         self.ROUTER_PROMPT = PromptTemplate.from_template(router_template)
 
-        # 4. Memory
+        # Memory
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True
         )
 
+    def _initialize_llm(self, provider: str, model_override: str = None) -> BaseLLM:
+        """Factory method to initialize the correct LLM based on provider"""
+        
+        if provider == "ollama":
+            from langchain_ollama import OllamaLLM
+            model = model_override or os.getenv("OLLAMA_MODEL", "llama3.2")
+            base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+            print(f"   └─ Using Ollama: {model} @ {base_url}")
+            return OllamaLLM(
+                model=model,
+                temperature=0,
+                base_url=base_url
+            )
+        
+        elif provider == "google":
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            model = model_override or os.getenv("GOOGLE_MODEL", "gemini-2.5-flash")
+            api_key = os.getenv("GOOGLE_API_KEY")
+            if not api_key:
+                raise ValueError("GOOGLE_API_KEY not found in .env file!")
+            print(f"   └─ Using Google Gemini: {model}")
+            return ChatGoogleGenerativeAI(
+                model=model,
+                temperature=0,
+                google_api_key=api_key
+            )
+        
+        elif provider == "openai":
+            from langchain_openai import ChatOpenAI
+            model = model_override or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY not found in .env file!")
+            print(f"   └─ Using OpenAI: {model}")
+            return ChatOpenAI(
+                model=model,
+                temperature=0,
+                api_key=api_key
+            )
+        
+        else:
+            raise ValueError(f"Unknown MODEL_PROVIDER: {provider}. Use 'ollama', 'google', or 'openai'")
+
     def _route_question(self, question: str) -> str:
         """Decide which tool to use"""
-        # Get history string
         history = self.memory.load_memory_variables({})['chat_history']
-        
-        # format prompt
         prompt = self.ROUTER_PROMPT.format(chat_history=history, question=question)
         
         # Generate classification
-        # We use a lower temperature for routing to be deterministic
-        response = self.llm.invoke(prompt).strip().upper()
+        response = self.llm.invoke(prompt)
+        
+        # Extract text from response (handles both string and message objects)
+        if hasattr(response, 'content'):
+            response = response.content
+        
+        response = str(response).strip().upper()
         
         # Simple heuristic cleanup
         if "LOCAL" in response: return "LOCAL"
@@ -79,9 +134,7 @@ Classification (LOCAL, WEB, or GENERAL):"""
         return "GENERAL"
 
     def answer_question(self, question: str) -> dict:
-        """
-        Main execution flow with Router optimization
-        """
+        """Main execution flow with Router optimization"""
         route = self._route_question(question)
         print(f"⚡ Router Decision: [{route}]")
         
@@ -90,19 +143,15 @@ Classification (LOCAL, WEB, or GENERAL):"""
         
         try:
             if route == "LOCAL":
-                # Execute Local Search
-                print("  -> Searching Local Documents...")
+                print("  → Searching Local Documents...")
                 result = self.local_qa_chain.invoke({"query": question})
                 final_answer = result["result"]
                 sources = result["source_documents"]
                 
             elif route == "WEB":
-                # Execute Web Search
-                print("  -> Searching the Internet...")
-                # We do a direct search + synthesis
+                print("  → Searching the Internet...")
                 search_results = self.web_search_tool.run(question)
                 
-                # Synthesize answer
                 synthesis_prompt = f"""Based on the following web search results, answer the user's question.
                 
 Question: {question}
@@ -111,14 +160,16 @@ Web Results:
 {search_results}
 
 Answer (concise and helpful):"""
-                final_answer = self.llm.invoke(synthesis_prompt)
+                
+                answer_obj = self.llm.invoke(synthesis_prompt)
+                final_answer = answer_obj.content if hasattr(answer_obj, 'content') else str(answer_obj)
                 
             else:
-                # General Chat
-                print("  -> General Conversation...")
-                final_answer = self.llm.invoke(question)
+                print("  → General Conversation...")
+                answer_obj = self.llm.invoke(question)
+                final_answer = answer_obj.content if hasattr(answer_obj, 'content') else str(answer_obj)
 
-            # Update Memory manually since we aren't using a Chain anymore
+            # Update Memory
             self.memory.chat_memory.add_user_message(question)
             self.memory.chat_memory.add_ai_message(final_answer)
             
@@ -131,10 +182,10 @@ Answer (concise and helpful):"""
         except Exception as e:
             print(f"✗ Error in QA execution: {str(e)}")
             return {
-                "answer": f"I encountered an error while processing your request: {str(e)}",
+                "answer": f"I encountered an error: {str(e)}",
                 "sources": [],
                 "chat_history": []
-            } # Fallback
+            }
     
     def reset_memory(self):
         """Clear history"""

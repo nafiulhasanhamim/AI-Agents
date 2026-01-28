@@ -1,0 +1,184 @@
+Using API Key: AIzaSyB4X4...OTOjs
+
+Querying Google AI for available models...
+============================================================
+[YES] Name: models/gemini-2.5-flash
+   Display: Gemini 2.5 Flash
+   Description: Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million toke...
+----------------------------------------
+[YES] Name: models/gemini-2.5-pro
+   Display: Gemini 2.5 Pro
+   Description: Stable release (June 17th, 2025) of Gemini 2.5 Pro...
+----------------------------------------
+[YES] Name: models/gemini-2.0-flash
+   Display: Gemini 2.0 Flash
+   Description: Gemini 2.0 Flash...
+----------------------------------------
+[YES] Name: models/gemini-2.0-flash-001
+   Display: Gemini 2.0 Flash 001
+   Description: Stable version of Gemini 2.0 Flash, our fast and versatile multimodal model for scaling across diver...
+----------------------------------------
+[YES] Name: models/gemini-2.0-flash-exp-image-generation
+   Display: Gemini 2.0 Flash (Image Generation) Experimental
+   Description: Gemini 2.0 Flash (Image Generation) Experimental...
+----------------------------------------
+[YES] Name: models/gemini-2.0-flash-lite-001
+   Display: Gemini 2.0 Flash-Lite 001
+   Description: Stable version of Gemini 2.0 Flash-Lite...
+----------------------------------------
+[YES] Name: models/gemini-2.0-flash-lite
+   Display: Gemini 2.0 Flash-Lite
+   Description: Gemini 2.0 Flash-Lite...
+----------------------------------------
+[YES] Name: models/gemini-exp-1206
+   Display: Gemini Experimental 1206
+   Description: Experimental release (March 25th, 2025) of Gemini 2.5 Pro...
+----------------------------------------
+[YES] Name: models/gemini-2.5-flash-preview-tts
+   Display: Gemini 2.5 Flash Preview TTS
+   Description: Gemini 2.5 Flash Preview TTS...
+----------------------------------------
+[YES] Name: models/gemini-2.5-pro-preview-tts
+   Display: Gemini 2.5 Pro Preview TTS
+   Description: Gemini 2.5 Pro Preview TTS...
+----------------------------------------
+[YES] Name: models/gemma-3-1b-it
+   Display: Gemma 3 1B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemma-3-4b-it
+   Display: Gemma 3 4B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemma-3-12b-it
+   Display: Gemma 3 12B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemma-3-27b-it
+   Display: Gemma 3 27B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemma-3n-e4b-it
+   Display: Gemma 3n E4B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemma-3n-e2b-it
+   Display: Gemma 3n E2B
+   Description: ...
+----------------------------------------
+[YES] Name: models/gemini-flash-latest
+   Display: Gemini Flash Latest
+   Description: Latest release of Gemini Flash...
+----------------------------------------
+[YES] Name: models/gemini-flash-lite-latest
+   Display: Gemini Flash-Lite Latest
+   Description: Latest release of Gemini Flash-Lite...
+----------------------------------------
+[YES] Name: models/gemini-pro-latest
+   Display: Gemini Pro Latest
+   Description: Latest release of Gemini Pro...
+----------------------------------------
+[YES] Name: models/gemini-2.5-flash-lite
+   Display: Gemini 2.5 Flash-Lite
+   Description: Stable version of Gemini 2.5 Flash-Lite, released in July of 2025...
+----------------------------------------
+[YES] Name: models/gemini-2.5-flash-image
+   Display: Nano Banana
+   Description: Gemini 2.5 Flash Preview Image...
+----------------------------------------
+[YES] Name: models/gemini-2.5-flash-preview-09-2025
+   Display: Gemini 2.5 Flash Preview Sep 2025
+   Description: Gemini 2.5 Flash Preview Sep 2025...
+----------------------------------------
+[YES] Name: models/gemini-2.5-flash-lite-preview-09-2025
+   Display: Gemini 2.5 Flash-Lite Preview Sep 2025
+   Description: Preview release (Septempber 25th, 2025) of Gemini 2.5 Flash-Lite...
+----------------------------------------
+[YES] Name: models/gemini-3-pro-preview
+   Display: Gemini 3 Pro Preview
+   Description: Gemini 3 Pro Preview...
+----------------------------------------
+[YES] Name: models/gemini-3-flash-preview
+   Display: Gemini 3 Flash Preview
+   Description: Gemini 3 Flash Preview...
+----------------------------------------
+[YES] Name: models/gemini-3-pro-image-preview
+   Display: Nano Banana Pro
+   Description: Gemini 3 Pro Image Preview...
+----------------------------------------
+[YES] Name: models/nano-banana-pro-preview
+   Display: Nano Banana Pro
+   Description: Gemini 3 Pro Image Preview...
+----------------------------------------
+[YES] Name: models/gemini-robotics-er-1.5-preview
+   Display: Gemini Robotics-ER 1.5 Preview
+   Description: Gemini Robotics-ER 1.5 Preview...
+----------------------------------------
+[YES] Name: models/gemini-2.5-computer-use-preview-10-2025
+   Display: Gemini 2.5 Computer Use Preview 10-2025
+   Description: Gemini 2.5 Computer Use Preview 10-2025...
+----------------------------------------
+[YES] Name: models/deep-research-pro-preview-12-2025
+   Display: Deep Research Pro Preview (Dec-12-2025)
+   Description: Preview release (December 12th, 2025) of Deep Research Pro...
+----------------------------------------
+[NO] Name: models/gemini-embedding-001
+   Display: Gemini Embedding 001
+   Description: Obtain a distributed representation of a text....
+----------------------------------------
+[NO] Name: models/aqa
+   Display: Model that performs Attributed Question Answering.
+   Description: Model trained to return answers to questions that are grounded in provided sources, along with estim...
+----------------------------------------
+[NO] Name: models/imagen-4.0-generate-preview-06-06
+   Display: Imagen 4 (Preview)
+   Description: Vertex served Imagen 4.0 model...
+----------------------------------------
+[NO] Name: models/imagen-4.0-ultra-generate-preview-06-06
+   Display: Imagen 4 Ultra (Preview)
+   Description: Vertex served Imagen 4.0 ultra model...
+----------------------------------------
+[NO] Name: models/imagen-4.0-generate-001
+   Display: Imagen 4
+   Description: Vertex served Imagen 4.0 model...
+----------------------------------------
+[NO] Name: models/imagen-4.0-ultra-generate-001
+   Display: Imagen 4 Ultra
+   Description: Vertex served Imagen 4.0 ultra model...
+----------------------------------------
+[NO] Name: models/imagen-4.0-fast-generate-001
+   Display: Imagen 4 Fast
+   Description: Vertex served Imagen 4.0 Fast model...
+----------------------------------------
+[NO] Name: models/veo-2.0-generate-001
+   Display: Veo 2
+   Description: Vertex served Veo 2 model. Access to this model requires billing to be enabled on the associated Goo...
+----------------------------------------
+[NO] Name: models/veo-3.0-generate-001
+   Display: Veo 3
+   Description: Veo 3...
+----------------------------------------
+[NO] Name: models/veo-3.0-fast-generate-001
+   Display: Veo 3 fast
+   Description: Veo 3 fast...
+----------------------------------------
+[NO] Name: models/veo-3.1-generate-preview
+   Display: Veo 3.1
+   Description: Veo 3.1...
+----------------------------------------
+[NO] Name: models/veo-3.1-fast-generate-preview
+   Display: Veo 3.1 fast
+   Description: Veo 3.1 fast...
+----------------------------------------
+[NO] Name: models/gemini-2.5-flash-native-audio-latest
+   Display: Gemini 2.5 Flash Native Audio Latest
+   Description: Latest release of Gemini 2.5 Flash Native Audio...
+----------------------------------------
+[NO] Name: models/gemini-2.5-flash-native-audio-preview-09-2025
+   Display: Gemini 2.5 Flash Native Audio Preview 09-2025
+   Description: Gemini 2.5 Flash Native Audio Preview 09-2025...
+----------------------------------------
+[NO] Name: models/gemini-2.5-flash-native-audio-preview-12-2025
+   Display: Gemini 2.5 Flash Native Audio Preview 12-2025
+   Description: Gemini 2.5 Flash Native Audio Preview 12-2025...
+----------------------------------------

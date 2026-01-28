@@ -60,10 +60,9 @@ async def startup_event():
         )
         vector_store = vector_store_manager.get_vector_store()
         
-        # Initialize QA service (Now with Memory!)
+        # Initialize QA service - model is now configured via .env
         qa_service = QAService(
-            vector_store=vector_store,
-            model_name="llama3.2"
+            vector_store=vector_store
         )
         
         print("✓ Conversational QA system initialized successfully!")

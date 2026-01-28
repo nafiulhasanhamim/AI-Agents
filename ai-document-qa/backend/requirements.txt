@@ -14,3 +14,5 @@ duckduckgo-search
 ddgs
 langchain-ollama
 langchain-chroma
+langchain-google-genai
+python-dotenv
