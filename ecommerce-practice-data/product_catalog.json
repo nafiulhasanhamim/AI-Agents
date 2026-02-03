@@ -1,0 +1,64 @@
+[
+  {
+    "id": "PROD-001",
+    "name": "Lumix Vantage X1 Mirrorless Camera",
+    "category": "Electronics > Photography",
+    "price": 899.99,
+    "brand": "Lumix",
+    "specs": {
+      "resolution": "24.2 MP",
+      "video": "4K 60fps",
+      "autofocus": "Hybrid Phase Detection",
+      "weight": "450g",
+      "ports": ["USB-C", "Micro-HDMI", "3.5mm Jack"]
+    },
+    "description": "A lightweight powerhouse for both videographers and street photographers. Features a robust weather-sealed body and industry-leading in-body image stabilization.",
+    "keywords": ["vlog", "mirrorless", "4k", "professional"]
+  },
+  {
+    "id": "PROD-002",
+    "name": "Audio-Technica ZenPods Pro",
+    "category": "Electronics > Audio",
+    "price": 199.99,
+    "brand": "Audio-Technica",
+    "specs": {
+      "battery_life": "30 hours with case",
+      "noise_cancelling": "Active Noise Cancellation (ANC)",
+      "connectivity": "Bluetooth 5.3",
+      "water_resistance": "IPX4"
+    },
+    "description": "Crystal clear sound with deep bass profile. The ZenPods Pro feature transparency mode and spatial audio support.",
+    "keywords": ["noise cancelling", "wireless", "earbuds", "spatial audio"]
+  },
+  {
+    "id": "PROD-003",
+    "name": "Titan Edge Gaming Laptop",
+    "category": "Electronics > Computers",
+    "price": 2499.00,
+    "brand": "Titan",
+    "specs": {
+      "processor": "Intel Core i9-13900K",
+      "gpu": "Nvidia RTX 4080",
+      "ram": "32GB DDR5",
+      "storage": "2TB NVMe SSD",
+      "display": "17.3 inch 240Hz QHD"
+    },
+    "description": "The ultimate gaming machine. The Titan Edge is designed for users who refuse to compromise on performance. Advanced liquid cooling system included.",
+    "keywords": ["gaming", "performance", "RTX", "high-end"]
+  },
+  {
+    "id": "PROD-004",
+    "name": "SwiftTab S12 Pro",
+    "category": "Electronics > Tablets",
+    "price": 649.00,
+    "brand": "Swift",
+    "specs": {
+      "display": "12.4 inch OLED",
+      "pencil_support": "Yes (Gen 3)",
+      "storage": "256GB",
+      "connectivity": "Wi-Fi 6E + 5G"
+    },
+    "description": "Thin, light, and powerful. Perfectly suited for digital artists and students alike with its vibrant OLED display.",
+    "keywords": ["tablet", "OLED", "creative", "student"]
+  }
+]

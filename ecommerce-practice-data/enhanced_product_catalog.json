@@ -1,0 +1,320 @@
+[
+  {
+    "id": "LAPTOP-TIT-001",
+    "name": "Titan Edge Gaming Laptop Pro X1",
+    "category": "Electronics > Computers > Gaming Laptops",
+    "subcategory": "High-Performance Gaming",
+    "brand": "Titan",
+    "model": "Edge Pro X1",
+    "sku": "TIT-EDGE-PRO-X1-2026",
+    "price": 3299.99,
+    "currency": "USD",
+    "in_stock": true,
+    "stock_quantity": 47,
+    "on_sale": true,
+    "discount_percent": 15,
+    "original_price": 3882.34,
+    "release_date": "2025-11-15",
+    "last_updated": "2026-01-28",
+    
+    "short_description": "Ultimate gaming powerhouse with RTX 4090, Intel i9-14900K, and advanced liquid cooling system.",
+    
+    "detailed_description": "The Titan Edge Gaming Laptop Pro X1 represents the pinnacle of mobile gaming performance. Engineered for professional esports players and content creators who demand uncompromising power, this laptop features a custom-designed chassis with advanced thermal management and premium materials.\n\nThe laptop's revolutionary cooling system combines liquid metal thermal compound with a triple-fan design and vapor chamber technology, ensuring sustained peak performance even during extended gaming sessions. The RGB lighting system is fully customizable with per-key illumination and synchronized effects.\n\nBuilt for creators and gamers alike, the Edge Pro X1 includes Thunderbolt 4 connectivity, Wi-Fi 7 support, and a stunning 17.3-inch Mini-LED display with 100% DCI-P3 color accuracy. The laptop comes with a premium carrying case and 3-year international warranty.",
+    
+    "specifications": {
+      "processor": {
+        "brand": "Intel",
+        "model": "Core i9-14900K",
+        "cores": 24,
+        "threads": 32,
+        "base_clock": "3.2 GHz",
+        "boost_clock": "6.0 GHz",
+        "cache": "36MB L3"
+      },
+      "graphics": {
+        "brand": "NVIDIA",
+        "model": "GeForce RTX 4090 Mobile",
+        "vram": "16GB GDDR6X",
+        "ray_tracing": true,
+        "dlss": "DLSS 3.5"
+      },
+      "memory": {
+        "capacity": "64GB",
+        "type": "DDR5-5600",
+        "slots": 4,
+        "max_capacity": "128GB",
+        "expandable": true
+      },
+      "storage": {
+        "primary": "2TB NVMe SSD Gen5",
+        "secondary": "1TB NVMe SSD Gen4",
+        "slots": 3,
+        "max_capacity": "12TB"
+      },
+      "display": {
+        "size": "17.3 inch",
+        "resolution": "3840x2160",
+        "refresh_rate": "240Hz",
+        "panel_type": "Mini-LED",
+        "color_gamut": "100% DCI-P3",
+        "brightness": "1000 nits",
+        "hdr": "HDR1000"
+      },
+      "connectivity": {
+        "wifi": "Wi-Fi 7 (802.11be)",
+        "bluetooth": "Bluetooth 5.4",
+        "ethernet": "2.5Gb Ethernet",
+        "ports": [
+          "3x Thunderbolt 4",
+          "2x USB 3.2 Gen2",
+          "1x HDMI 2.1",
+          "1x DisplayPort 2.1",
+          "1x 3.5mm Audio",
+          "1x SD Card Reader"
+        ]
+      },
+      "physical": {
+        "dimensions": "397 x 284 x 23.9 mm",
+        "weight": "3.2 kg",
+        "material": "CNC Aluminum",
+        "color": "Stealth Black"
+      },
+      "battery": {
+        "capacity": "99.9Wh",
+        "life": "8 hours (productivity), 3 hours (gaming)",
+        "charging": "330W GaN Charger",
+        "fast_charge": "50% in 30 minutes"
+      },
+      "cooling": {
+        "type": "Liquid Metal + Vapor Chamber",
+        "fans": 3,
+        "heat_pipes": 7,
+        "thermal_zones": 12
+      }
+    },
+    
+    "features": [
+      "Per-key RGB mechanical keyboard with 2.5mm travel",
+      "Advanced thermal management with liquid metal",
+      "Customizable RGB lighting zones",
+      "Premium audio with quad speakers and subwoofer",
+      "Biometric fingerprint scanner",
+      "IR camera for Windows Hello",
+      "Killer Wi-Fi 7 with gaming prioritization",
+      "MSHybrid graphics switching",
+      "Overclocking support with Titan Control Center"
+    ],
+    
+    "warranty": {
+      "duration": "3 years",
+      "type": "International Premium",
+      "coverage": ["Hardware defects", "Accidental damage", "Battery replacement"],
+      "support": "24/7 Priority Support"
+    },
+    
+    "reviews": {
+      "average_rating": 4.7,
+      "total_reviews": 342,
+      "rating_distribution": {
+        "5_star": 234,
+        "4_star": 78,
+        "3_star": 21,
+        "2_star": 6,
+        "1_star": 3
+      },
+      "featured_reviews": [
+        {
+          "reviewer": "ProGamer_Mike",
+          "rating": 5,
+          "title": "Absolute Beast for Gaming and Streaming",
+          "content": "This laptop handles everything I throw at it. Cyberpunk 2077 at max settings with ray tracing? No problem. The cooling system is incredible - never goes above 75°C even during 8-hour streaming sessions.",
+          "verified_purchase": true,
+          "helpful_votes": 89
+        },
+        {
+          "reviewer": "ContentCreator_Sarah",
+          "rating": 5,
+          "title": "Perfect for Video Editing",
+          "content": "The 4K display is stunning for color grading, and the RTX 4090 makes rendering so much faster. Battery life is decent for such a powerful machine. The keyboard feels premium.",
+          "verified_purchase": true,
+          "helpful_votes": 67
+        }
+      ]
+    },
+    
+    "compatibility": {
+      "operating_systems": ["Windows 11 Pro", "Linux (Ubuntu certified)"],
+      "vr_ready": true,
+      "streaming_ready": true,
+      "content_creation_optimized": true
+    },
+    
+    "included_accessories": [
+      "330W GaN Power Adapter",
+      "Premium Carrying Case",
+      "Wireless Gaming Mouse",
+      "USB-C to Ethernet Adapter",
+      "Cleaning Kit",
+      "Quick Start Guide"
+    ],
+    
+    "tags": ["gaming", "high-performance", "rtx-4090", "content-creation", "premium", "liquid-cooling", "4k-display", "mechanical-keyboard"],
+    "search_keywords": ["gaming laptop", "RTX 4090", "Intel i9", "4K gaming", "content creation", "streaming laptop", "high-end gaming"]
+  },
+  
+  {
+    "id": "PHONE-APX-002",
+    "name": "Apex Quantum Pro 15",
+    "category": "Electronics > Mobile > Smartphones",
+    "subcategory": "Flagship Smartphones",
+    "brand": "Apex",
+    "model": "Quantum Pro 15",
+    "sku": "APX-QP15-512-BLK",
+    "price": 1299.99,
+    "currency": "USD",
+    "in_stock": true,
+    "stock_quantity": 156,
+    "on_sale": false,
+    "release_date": "2025-09-20",
+    "last_updated": "2026-01-25",
+    
+    "short_description": "Revolutionary smartphone with quantum-dot display, AI-powered triple camera system, and 5G connectivity.",
+    
+    "detailed_description": "The Apex Quantum Pro 15 redefines smartphone excellence with cutting-edge quantum-dot display technology that delivers unprecedented color accuracy and brightness. Powered by the latest Snapdragon 8 Gen 4 processor and enhanced with Apex's proprietary AI acceleration chip, this device offers lightning-fast performance for any task.\n\nThe revolutionary camera system features a 200MP main sensor with variable aperture, ultra-wide lens with macro capabilities, and a periscope telephoto lens offering 10x optical zoom. Advanced computational photography powered by machine learning delivers professional-quality results in any lighting condition.\n\nBuilt with aerospace-grade titanium and Gorilla Glass Victus 3, the Quantum Pro 15 combines durability with elegance. The device supports wireless charging, reverse wireless charging, and ultra-fast 120W wired charging that reaches 100% battery in just 18 minutes.",
+    
+    "specifications": {
+      "processor": {
+        "chipset": "Snapdragon 8 Gen 4",
+        "cpu": "Octa-core (1x3.4 GHz + 3x3.1 GHz + 4x2.3 GHz)",
+        "gpu": "Adreno 750",
+        "ai_chip": "Apex Neural Engine 3.0",
+        "process": "3nm"
+      },
+      "display": {
+        "size": "6.8 inch",
+        "type": "Quantum-Dot AMOLED",
+        "resolution": "3200x1440",
+        "refresh_rate": "144Hz adaptive",
+        "brightness": "2000 nits peak",
+        "color_accuracy": "100% DCI-P3",
+        "hdr": "HDR10+, Dolby Vision"
+      },
+      "camera": {
+        "main": {
+          "sensor": "200MP Samsung ISOCELL HP3",
+          "aperture": "f/1.4-2.8 variable",
+          "ois": true,
+          "features": ["8K video", "Night mode", "Pro mode"]
+        },
+        "ultra_wide": {
+          "sensor": "50MP",
+          "aperture": "f/2.2",
+          "field_of_view": "120°",
+          "macro": "2cm focus"
+        },
+        "telephoto": {
+          "sensor": "48MP periscope",
+          "aperture": "f/2.8",
+          "zoom": "10x optical, 100x digital",
+          "ois": true
+        },
+        "front": {
+          "sensor": "32MP",
+          "aperture": "f/2.0",
+          "features": ["4K video", "Portrait mode"]
+        }
+      },
+      "memory_storage": {
+        "ram": "12GB LPDDR5X",
+        "storage": "512GB UFS 4.0",
+        "expandable": false
+      },
+      "battery": {
+        "capacity": "5200mAh",
+        "wired_charging": "120W SuperCharge",
+        "wireless_charging": "50W",
+        "reverse_wireless": "15W",
+        "charge_time": "0-100% in 18 minutes"
+      },
+      "connectivity": {
+        "5g": "Sub-6GHz and mmWave",
+        "wifi": "Wi-Fi 7 (802.11be)",
+        "bluetooth": "Bluetooth 5.4",
+        "nfc": true,
+        "usb": "USB-C 3.2 Gen 2"
+      },
+      "physical": {
+        "dimensions": "163.2 x 75.8 x 8.9 mm",
+        "weight": "198g",
+        "materials": "Titanium frame, Gorilla Glass Victus 3",
+        "water_resistance": "IP68",
+        "colors": ["Midnight Black", "Arctic Silver", "Cosmic Blue"]
+      }
+    },
+    
+    "features": [
+      "In-display ultrasonic fingerprint scanner",
+      "Face unlock with 3D depth sensing",
+      "Stereo speakers tuned by Harman Kardon",
+      "Always-on display with customizable widgets",
+      "AI-powered battery optimization",
+      "Satellite emergency messaging",
+      "Advanced haptic feedback system",
+      "Multi-window productivity mode"
+    ],
+    
+    "warranty": {
+      "duration": "2 years",
+      "type": "Limited Warranty",
+      "coverage": ["Manufacturing defects", "Battery degradation"],
+      "support": "Online and phone support"
+    },
+    
+    "reviews": {
+      "average_rating": 4.5,
+      "total_reviews": 1247,
+      "rating_distribution": {
+        "5_star": 687,
+        "4_star": 398,
+        "3_star": 124,
+        "2_star": 28,
+        "1_star": 10
+      },
+      "featured_reviews": [
+        {
+          "reviewer": "TechReviewer_Alex",
+          "rating": 5,
+          "title": "Camera Quality is Unmatched",
+          "content": "The variable aperture main camera is a game-changer. Photos in low light are incredibly detailed, and the 10x zoom is actually usable. Battery life easily gets me through a full day of heavy use.",
+          "verified_purchase": true,
+          "helpful_votes": 156
+        },
+        {
+          "reviewer": "PhotoPro_Lisa",
+          "rating": 4,
+          "title": "Great Phone, Minor Software Issues",
+          "content": "Hardware is fantastic, display is gorgeous, and performance is smooth. Had some minor bugs with the camera app that were fixed in recent updates. Overall very satisfied.",
+          "verified_purchase": true,
+          "helpful_votes": 89
+        }
+      ]
+    },
+    
+    "compatibility": {
+      "operating_system": "Android 15 with Apex UI 7.0",
+      "update_policy": "5 years OS updates, 6 years security patches",
+      "carrier_compatibility": ["Verizon", "AT&T", "T-Mobile", "Unlocked"]
+    },
+    
+    "included_accessories": [
+      "120W SuperCharge Adapter",
+      "USB-C to USB-C Cable",
+      "Clear Protective Case",
+      "SIM Ejector Tool",
+      "Quick Start Guide"
+    ],
+    
+    "tags": ["flagship", "5g", "quantum-display", "200mp-camera", "fast-charging", "premium", "ai-powered"],
+    "search_keywords": ["flagship smartphone", "200MP camera", "quantum display", "5G phone", "fast charging", "premium phone"]
+  }
+]
